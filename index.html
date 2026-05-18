@@ -1,0 +1,190 @@
+ <!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Voice Generator</title>
+
+<style>
+
+body{
+margin:0;
+font-family:Arial;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+background:linear-gradient(45deg,#7f00ff,#00c3ff);
+}
+
+.container{
+width:700px;
+padding:30px;
+border-radius:20px;
+background:rgba(255,255,255,.2);
+backdrop-filter:blur(10px);
+color:white;
+}
+
+textarea{
+width:100%;
+height:120px;
+padding:10px;
+margin-bottom:20px;
+border-radius:10px;
+border:none;
+}
+
+.control{
+margin:15px 0;
+}
+
+button{
+padding:10px 20px;
+margin:10px;
+border:none;
+border-radius:20px;
+cursor:pointer;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>🎤 Voice Generator</h1>
+
+<textarea
+id="text"
+placeholder="Type text here">
+</textarea>
+
+<div class="control">
+
+Voice:
+
+<select id="voice"></select>
+
+</div>
+
+<div class="control">
+
+Volume
+
+<input
+id="volume"
+type="range"
+min="0"
+max="1"
+step="0.1"
+value="1">
+
+</div>
+
+<div class="control">
+
+Depth
+
+<input
+id="pitch"
+type="range"
+min="0.5"
+max="2"
+step="0.1"
+value="1">
+
+</div>
+
+<div class="control">
+
+Speed
+
+<input
+id="rate"
+type="range"
+min="0.5"
+max="2"
+step="0.1"
+value="1">
+
+</div>
+
+<button onclick="speak()">
+Play
+</button>
+
+<button onclick="stopSpeech()">
+Stop
+</button>
+
+</div>
+
+<script>
+
+let voices=[];
+
+const voiceSelect=
+document.getElementById("voice");
+
+function loadVoices(){
+
+voices=speechSynthesis.getVoices();
+
+voiceSelect.innerHTML="";
+
+voices.forEach((v,i)=>{
+
+let option=document.createElement("option");
+
+option.value=i;
+
+option.text=v.name+" ("+v.lang+")";
+
+voiceSelect.appendChild(option);
+
+});
+
+}
+
+speechSynthesis.onvoiceschanged=loadVoices;
+
+loadVoices();
+
+function speak(){
+
+speechSynthesis.cancel();
+
+let speech=new SpeechSynthesisUtterance(
+document.getElementById("text").value
+);
+
+speech.voice=
+voices[voiceSelect.value];
+
+speech.volume=
+document.getElementById("volume").value;
+
+speech.pitch=
+document.getElementById("pitch").value;
+
+speech.rate=
+document.getElementById("rate").value;
+
+speechSynthesis.speak(speech);
+
+}
+
+function stopSpeech(){
+
+speechSynthesis.cancel();
+
+}
+
+</script>
+
+</body>
+</html>
